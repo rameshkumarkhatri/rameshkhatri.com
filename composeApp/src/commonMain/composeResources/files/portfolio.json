@@ -1,0 +1,140 @@
+{
+  "header": {
+    "initial": "R",
+    "name": "Ramesh Kumar",
+    "short_desc": "I build things for Android.",
+    "long_desc": "I'm a software engineer specializing in creating awesome Android applications, from prototype to fully functional end product."
+  },
+  "get_in_touch_url": "mailto:r.khatri91@gmail.com",
+  "resume_url": "https://rameshkhatri.com/resume.pdf",
+  "email": "r.khatri91@gmail.com",
+  "github": "https://github.com/rameshkumarkhatri",
+  "linkedin": "https://www.linkedin.com/in/rameshkumarkhatri/",
+  "twitter": "https://twitter.com/r_khatri91",
+  "about": {
+    "title": "About Me",
+    "details": [
+      "Hello! I'm Ramesh, an Android engineer based in Los Angeles. I enjoy building apps that live in people's pockets, taking them from the first prototype to a polished release on the Play Store.",
+      "I started out in Sindh, Pakistan, where I set up the Android department at Next Generation Innovation and later led the Android team at Startrum, shipping an encrypted chat app used by over 100,000 farmers. Today I'm a Senior Android Engineer at Thrive Market, working on shopping features, payments and the move to Kotlin.",
+      "I hold a Master's in Computer Science from Maharishi International University."
+    ],
+    "tech_stack": [
+      "Kotlin",
+      "Java",
+      "Android SDK",
+      "MVVM",
+      "Retrofit / OkHttp",
+      "Firebase",
+      "Unit & UI testing",
+      "Flutter"
+    ]
+  },
+  "experience": [
+    {
+      "title": "Senior Android Engineer",
+      "company": "Thrive Market",
+      "date_from": "2019",
+      "date_to": "Present",
+      "location": "California, USA",
+      "url": "https://thrivemarket.com",
+      "bullets": [
+        "Redesigning the Thrive Market Android app, leading team initiatives and managing Play Store releases",
+        "Launched the Shopping List feature and built Guided Shopping for better product recommendations",
+        "Implemented fraud prevention with the Braintree SDK and migrated core classes from Java to Kotlin",
+        "Owned unit tests, UI tests and memory profiling while working closely with iOS, backend and product teams"
+      ]
+    },
+    {
+      "title": "Lead Android Developer",
+      "company": "Startrum",
+      "date_from": "2016",
+      "date_to": "2018",
+      "location": "Sindh, Pakistan",
+      "bullets": [
+        "Promoted quickly to Android Team Lead, supervising web and mobile development",
+        "Built an encrypted chat app connecting over 100,000 farmers with agriculture experts",
+        "Created a custom SDK for event, error and view tracking",
+        "Shipped Tree Media Feed, the Karachi Golf Club app, Ittendance and iEvent"
+      ]
+    },
+    {
+      "title": "Applications Engineer",
+      "company": "Next Generation",
+      "date_from": "2015",
+      "date_to": "2016",
+      "location": "Sindh, Pakistan",
+      "bullets": [
+        "Built the Android department from the ground up",
+        "Sourced, hired, trained and supervised three Android developers",
+        "Delivered an eCommerce app, the ReadSpeed game and the eQuiz trivia game"
+      ]
+    },
+    {
+      "title": "Android Developer",
+      "company": "Approxen",
+      "date_from": "2012",
+      "date_to": "2015",
+      "location": "Sindh, Pakistan",
+      "bullets": [
+        "Designed and developed interfaces and functionality for Android apps",
+        "Built custom components and user-friendly interfaces",
+        "Contributed to four UAE apps, including Bacardi Heroes 2 and Dubai Ladies Club"
+      ]
+    }
+  ],
+  "featured_projects": [
+    {
+      "name": "SocialUma",
+      "details": "Upload pictures, organise them into folders, share them with other users and order prints, with payments handled through PayPal.",
+      "stack": ["Android", "Java", "REST", "PayPal"],
+      "link_url": "https://play.google.com/store/apps/details?id=com.mobifyall.socialumaapp"
+    },
+    {
+      "name": "MyBloggerTricks",
+      "details": "A mobile app that turns a popular blog into a native reading experience.",
+      "stack": ["Android", "Java", "Retrofit", "Glide"],
+      "link_url": "https://play.google.com/store/apps/details?id=com.mbt.mybloggertricks"
+    },
+    {
+      "name": "Farmer–Expert Chat",
+      "details": "An end-to-end encrypted chat app built at Startrum that connects over 100,000 farmers with agriculture experts.",
+      "stack": ["Java", "SQLCipher", "Socket.io", "Firebase", "OneSignal"]
+    }
+  ],
+  "case_study": [
+    {
+      "name": "Student Screening",
+      "details": "Web app that automates online exams with a password-free sign-in flow.",
+      "stack": ["Node", "Express", "Angular", "MongoDB"]
+    },
+    {
+      "name": "Tracking SDK",
+      "details": "Custom Android SDK for event, error and view tracking across Startrum apps.",
+      "stack": ["Java", "Android"]
+    },
+    {
+      "name": "Biometric Voting",
+      "details": "Election voting system that authenticates voters with a thumbprint device.",
+      "stack": ["C#", "MS SQL", "Biometric SDK"]
+    },
+    {
+      "name": "Car Rental System",
+      "details": "Java service that lets students rent cars on campus.",
+      "stack": ["Java", "JDBC", "MySQL"]
+    },
+    {
+      "name": "eQuiz & ReadSpeed",
+      "details": "A trivia game and a speed-reading game for Android.",
+      "stack": ["Java", "SQLite"]
+    },
+    {
+      "name": "Karachi Golf Club",
+      "details": "Members' app for the Karachi Golf Club.",
+      "stack": ["Java", "Firebase", "Retrofit"]
+    }
+  ],
+  "contact": {
+    "title": "Get In Touch",
+    "message": "My inbox is always open. Whether you have a question, a project in mind, or just want to say hi, I'll do my best to get back to you!"
+  }
+}
