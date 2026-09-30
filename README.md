@@ -23,7 +23,15 @@ All content lives in `composeApp/src/commonMain/composeResources/files/portfolio
 startup and parsed into the models in `data/Portfolio.kt`. Optional fields (`resume_url`,
 `location`, `url`, `link_url`, …) can be left out or blank and the matching UI is hidden.
 
-Colors are in `theme/Theme.kt`.
+Colors, typography and the theme live in the `designsystem` module
+(`designsystem/src/commonMain/kotlin/com/rameshkhatri/portfolio/designsystem/`):
+
+- `Colors.kt` — `PortfolioColors` semantic slots with `DarkPortfolioColors` and `LightPortfolioColors`
+- `Typography.kt` — `mono()`, `body()`, `heading()` text styles (bundled Fira Code)
+- `Theme.kt` — `PortfolioTheme(darkTheme = …)` root, defaults to the system setting; read values
+  in UI via `PortfolioTheme.colors`
+
+To force a mode, pass `PortfolioTheme(darkTheme = true)` (or `ThemeMode.Dark.isDark()`) in `App.kt`.
 
 ## Running
 
@@ -59,8 +67,9 @@ Compose for Web needs a browser with WasmGC support (current Chrome, Firefox, Sa
 - **Photo:** the About section shows "RK" initials. Add your headshot to
   `composeApp/src/commonMain/composeResources/drawable/` (add `implementation(compose.components.resources)`
   to `commonMain`) and swap the `Text("RK")` in `Portrait()` for an `Image`.
-- **Fonts:** the original uses Calibre and SF Mono. This uses the platform default and monospace
-  fonts. Drop `.ttf` files into `composeResources/font/` and update `theme/Theme.kt` to match exactly.
+- **Fonts:** the original uses Calibre and SF Mono. Fira Code is bundled for monospace; body text
+  uses the platform default. Drop `.ttf` files into `designsystem/src/commonMain/composeResources/font/`
+  and update `designsystem/.../Typography.kt` to match exactly.
 
 ## Versions
 

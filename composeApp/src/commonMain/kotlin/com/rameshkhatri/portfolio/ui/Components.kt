@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -41,15 +43,19 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rameshkhatri.portfolio.theme.Palette
-import com.rameshkhatri.portfolio.theme.heading
-import com.rameshkhatri.portfolio.theme.mono
+import com.rameshkhatri.portfolio.designsystem.PortfolioTheme
+import com.rameshkhatri.portfolio.designsystem.heading
+import com.rameshkhatri.portfolio.designsystem.mono
 import androidx.compose.ui.text.font.FontWeight
 import kotlin.math.PI
 import kotlin.math.cos
@@ -96,6 +102,7 @@ fun Reveal(index: Int = 0, modifier: Modifier = Modifier, content: @Composable (
 
 @Composable
 fun Bullet(topPadding: Dp, modifier: Modifier = Modifier) {
+    val accent = PortfolioTheme.colors.accent
     Canvas(modifier.padding(top = topPadding).size(width = 7.dp, height = 9.dp)) {
         val path = Path().apply {
             moveTo(0f, 0f)
@@ -103,7 +110,7 @@ fun Bullet(topPadding: Dp, modifier: Modifier = Modifier) {
             lineTo(0f, size.height)
             close()
         }
-        drawPath(path, Palette.Green)
+        drawPath(path, accent)
     }
 }
 
@@ -123,7 +130,7 @@ fun LinkText(
     url: String,
     style: TextStyle,
     modifier: Modifier = Modifier,
-    hoverColor: Color = Palette.Green,
+    hoverColor: Color = PortfolioTheme.colors.accent,
 ) {
     val uri = LocalUriHandler.current
     val (source, hovered) = rememberHoverSource()
@@ -144,8 +151,8 @@ fun OutlineButton(text: String, big: Boolean = false, onClick: () -> Unit) {
     Box(
         Modifier
             .clip(shape)
-            .border(1.dp, Palette.Green, shape)
-            .background(if (hovered) Palette.Green.copy(alpha = 0.1f) else Color.Transparent)
+            .border(1.dp, PortfolioTheme.colors.accent, shape)
+            .background(if (hovered) PortfolioTheme.colors.accent.copy(alpha = 0.1f) else Color.Transparent)
             .linkClick(source, onClick)
             .padding(horizontal = if (big) 28.dp else 16.dp, vertical = if (big) 18.dp else 10.dp),
     ) {
@@ -168,7 +175,7 @@ fun SectionHeading(number: Int, title: String, compact: Boolean) {
                 .weight(1f)
                 .widthIn(max = 300.dp)
                 .height(1.dp)
-                .background(Palette.LightestNavy),
+                .background(PortfolioTheme.colors.outline),
         )
     }
 }
@@ -176,6 +183,7 @@ fun SectionHeading(number: Int, title: String, compact: Boolean) {
 /** Hexagon "R" logo from the original site. */
 @Composable
 fun Logo(initial: String, modifier: Modifier = Modifier, size: Dp = 42.dp) {
+    val accent = PortfolioTheme.colors.accent
     Box(modifier.size(size), contentAlignment = Alignment.Center) {
         Canvas(Modifier.size(size)) {
             val r = this.size.minDimension / 2 - 2.dp.toPx()
@@ -187,7 +195,7 @@ fun Logo(initial: String, modifier: Modifier = Modifier, size: Dp = 42.dp) {
                 if (i == 0) path.moveTo(p.x, p.y) else path.lineTo(p.x, p.y)
             }
             path.close()
-            drawPath(path, Palette.Green, style = Stroke(width = 2.dp.toPx()))
+            drawPath(path, accent, style = Stroke(width = 2.dp.toPx()))
         }
         Text(initial, style = mono((size.value * 0.42f).sp).copy(fontWeight = FontWeight.Bold))
     }
@@ -197,6 +205,7 @@ fun Logo(initial: String, modifier: Modifier = Modifier, size: Dp = 42.dp) {
 @Composable
 fun MenuIcon(open: Boolean, modifier: Modifier = Modifier) {
     val t by animateFloatAsState(if (open) 1f else 0f, tween(250))
+    val accent = PortfolioTheme.colors.accent
     Canvas(modifier.size(width = 30.dp, height = 24.dp)) {
         val stroke = 2.dp.toPx()
         val w = size.width
@@ -204,14 +213,14 @@ fun MenuIcon(open: Boolean, modifier: Modifier = Modifier) {
         val mid = h / 2
         if (t < 0.5f) {
             val k = 1f - t * 2f
-            drawLine(Palette.Green, Offset(0f, mid - (mid - stroke) * k), Offset(w, mid - (mid - stroke) * k), stroke, StrokeCap.Round)
-            drawLine(Palette.Green, Offset(w * 0.2f, mid), Offset(w, mid), stroke, StrokeCap.Round)
-            drawLine(Palette.Green, Offset(w * 0.4f, mid + (mid - stroke) * k), Offset(w, mid + (mid - stroke) * k), stroke, StrokeCap.Round)
+            drawLine(accent, Offset(0f, mid - (mid - stroke) * k), Offset(w, mid - (mid - stroke) * k), stroke, StrokeCap.Round)
+            drawLine(accent, Offset(w * 0.2f, mid), Offset(w, mid), stroke, StrokeCap.Round)
+            drawLine(accent, Offset(w * 0.4f, mid + (mid - stroke) * k), Offset(w, mid + (mid - stroke) * k), stroke, StrokeCap.Round)
         } else {
             val k = (t - 0.5f) * 2f
             val dy = (w / 2) * k * 0.8f
-            drawLine(Palette.Green, Offset(w * 0.1f, mid - dy), Offset(w * 0.9f, mid + dy), stroke, StrokeCap.Round)
-            drawLine(Palette.Green, Offset(w * 0.1f, mid + dy), Offset(w * 0.9f, mid - dy), stroke, StrokeCap.Round)
+            drawLine(accent, Offset(w * 0.1f, mid - dy), Offset(w * 0.9f, mid + dy), stroke, StrokeCap.Round)
+            drawLine(accent, Offset(w * 0.1f, mid + dy), Offset(w * 0.9f, mid - dy), stroke, StrokeCap.Round)
         }
     }
 }
@@ -219,6 +228,7 @@ fun MenuIcon(open: Boolean, modifier: Modifier = Modifier) {
 /** Folder outline used on the small project cards. */
 @Composable
 fun FolderIcon(modifier: Modifier = Modifier) {
+    val accent = PortfolioTheme.colors.accent
     Canvas(modifier.size(width = 38.dp, height = 30.dp)) {
         val w = size.width
         val h = size.height
@@ -231,10 +241,53 @@ fun FolderIcon(modifier: Modifier = Modifier) {
             lineTo(0f, h)
             close()
         }
-        drawPath(path, Palette.Green, style = Stroke(width = 1.5.dp.toPx()))
+        drawPath(path, accent, style = Stroke(width = 1.5.dp.toPx()))
     }
 }
 
 @Composable
 fun animateLift(hovered: Boolean, amount: Dp = 5.dp): Dp =
     animateDpAsState(if (hovered) -amount else 0.dp, tween(200)).value
+
+/** Sun / moon button that flips between light and dark mode. Morphs between the two shapes. */
+@Composable
+fun ThemeToggle(isDark: Boolean, onToggle: () -> Unit, modifier: Modifier = Modifier) {
+    val (source, hovered) = rememberHoverSource()
+    val color = if (hovered) PortfolioTheme.colors.accent else PortfolioTheme.colors.textPrimary
+    // 0 = sun, 1 = moon
+    val t by animateFloatAsState(if (isDark) 1f else 0f, tween(350))
+    val label = if (isDark) "Switch to light mode" else "Switch to dark mode"
+    Canvas(
+        modifier
+            .linkClick(source, onToggle)
+            .semantics { role = Role.Button; contentDescription = label }
+            .padding(10.dp)
+            .size(22.dp),
+    ) {
+        val r = size.minDimension / 2
+        val c = center
+        val bodyR = r * (0.5f + 0.3f * t)
+        val disc = Path().apply { addOval(Rect(c, bodyR)) }
+        // Cut-out that slides in from the top-right to carve the crescent.
+        val d = bodyR * (3f - 2.3f * t)
+        val cut = Path().apply { addOval(Rect(Offset(c.x + d * 0.7f, c.y - d * 0.7f), bodyR * 0.9f)) }
+        drawPath(Path.combine(PathOperation.Difference, disc, cut), color)
+        // Sun rays fade and shrink into the disc as it becomes the moon.
+        val rayAlpha = 1f - t
+        if (rayAlpha > 0.01f) {
+            val inner = bodyR * 1.45f
+            val outer = inner + (r - inner) * rayAlpha
+            for (i in 0 until 8) {
+                val a = (i * 45.0) * PI / 180.0
+                val dir = Offset(cos(a).toFloat(), sin(a).toFloat())
+                drawLine(
+                    color.copy(alpha = color.alpha * rayAlpha),
+                    c + dir * inner,
+                    c + dir * outer,
+                    strokeWidth = 2.dp.toPx(),
+                    cap = StrokeCap.Round,
+                )
+            }
+        }
+    }
+}

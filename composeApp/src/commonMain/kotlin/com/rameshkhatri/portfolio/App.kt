@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
@@ -49,9 +48,10 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.rameshkhatri.portfolio.data.Portfolio
 import com.rameshkhatri.portfolio.data.loadPortfolio
-import com.rameshkhatri.portfolio.theme.Palette
-import com.rameshkhatri.portfolio.theme.PortfolioTheme
-import com.rameshkhatri.portfolio.theme.mono
+import com.rameshkhatri.portfolio.designsystem.PortfolioTheme
+import com.rameshkhatri.portfolio.designsystem.ThemeState
+import com.rameshkhatri.portfolio.designsystem.isDark
+import com.rameshkhatri.portfolio.designsystem.mono
 import com.rameshkhatri.portfolio.ui.AboutSection
 import com.rameshkhatri.portfolio.ui.ContactSection
 import com.rameshkhatri.portfolio.ui.ExperienceSection
@@ -62,6 +62,7 @@ import com.rameshkhatri.portfolio.ui.Logo
 import com.rameshkhatri.portfolio.ui.MenuIcon
 import com.rameshkhatri.portfolio.ui.OutlineButton
 import com.rameshkhatri.portfolio.ui.Reveal
+import com.rameshkhatri.portfolio.ui.ThemeToggle
 import com.rameshkhatri.portfolio.ui.WorkSection
 import com.rameshkhatri.portfolio.ui.linkClick
 import com.rameshkhatri.portfolio.ui.rememberHoverSource
@@ -81,23 +82,24 @@ private val NavHeightScrolled = 70.dp
 
 @Composable
 fun App() {
-    PortfolioTheme {
+    val dark = ThemeState.mode.isDark()
+    PortfolioTheme(darkTheme = dark) {
         val portfolio by produceState<Portfolio?>(null) { value = loadPortfolio() }
         val content = portfolio
         if (content == null) {
-            Box(Modifier.fillMaxSize().background(Palette.Navy))
+            Box(Modifier.fillMaxSize().background(PortfolioTheme.colors.background))
         } else {
-            PortfolioPage(content)
+            PortfolioPage(content, isDark = dark, onToggleTheme = { ThemeState.toggle(dark) })
         }
     }
 }
 
 @Composable
-private fun PortfolioPage(portfolio: Portfolio) {
+private fun PortfolioPage(portfolio: Portfolio, isDark: Boolean, onToggleTheme: () -> Unit) {
     BoxWithConstraints(
         Modifier
             .fillMaxSize()
-            .background(Palette.Navy)
+            .background(PortfolioTheme.colors.background)
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {
         val width = maxWidth
@@ -180,6 +182,8 @@ private fun PortfolioPage(portfolio: Portfolio) {
             onNavigate = ::navigate,
             onResume = { uri.openUri(portfolio.resumeUrl) },
             onMenu = { menuOpen = !menuOpen },
+            isDark = isDark,
+            onToggleTheme = onToggleTheme,
         )
 
         if (!desktop) {
@@ -205,6 +209,8 @@ private fun NavBar(
     onNavigate: (Section) -> Unit,
     onResume: () -> Unit,
     onMenu: () -> Unit,
+    isDark: Boolean,
+    onToggleTheme: () -> Unit,
 ) {
     val height by animateDpAsState(if (scrolled) NavHeightScrolled else NavHeight)
     Row(
@@ -212,7 +218,7 @@ private fun NavBar(
             .fillMaxWidth()
             .height(height)
             .then(if (scrolled) Modifier.shadow(10.dp) else Modifier)
-            .background(Palette.Navy.copy(alpha = 0.95f))
+            .background(PortfolioTheme.colors.background.copy(alpha = 0.95f))
             .padding(horizontal = if (desktop) 50.dp else 25.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -223,11 +229,14 @@ private fun NavBar(
             Section.entries.forEachIndexed { i, s ->
                 Reveal(i + 1) { NavLink(i + 1, s.label) { onNavigate(s) } }
             }
+            Reveal(Section.entries.size + 1) { ThemeToggle(isDark, onToggleTheme) }
             Spacer(Modifier.width(15.dp))
             if (showResume) {
-                Reveal(Section.entries.size + 1) { OutlineButton("Resume", onClick = onResume) }
+                Reveal(Section.entries.size + 2) { OutlineButton("Resume", onClick = onResume) }
             }
         } else {
+            ThemeToggle(isDark, onToggleTheme)
+            Spacer(Modifier.width(8.dp))
             val (menuSource, _) = rememberHoverSource()
             MenuIcon(menuOpen, Modifier.linkClick(menuSource, onMenu))
         }
@@ -239,7 +248,7 @@ private fun NavLink(number: Int, label: String, onClick: () -> Unit) {
     val (source, hovered) = rememberHoverSource()
     Row(Modifier.linkClick(source, onClick).padding(10.dp)) {
         Text("0$number.", style = mono(13.sp))
-        Text(" $label", style = mono(13.sp, if (hovered) Palette.Green else Palette.LightestSlate))
+        Text(" $label", style = mono(13.sp, if (hovered) PortfolioTheme.colors.accent else PortfolioTheme.colors.textPrimary))
     }
 }
 
@@ -256,7 +265,7 @@ private fun MobileMenu(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
+                    .background(PortfolioTheme.colors.scrim)
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onClose),
             )
         }
@@ -270,7 +279,7 @@ private fun MobileMenu(
                 Modifier
                     .fillMaxSize()
                     .shadow(20.dp)
-                    .background(Palette.LightNavy)
+                    .background(PortfolioTheme.colors.surface)
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {},
             ) {
                 val (closeSource, _) = rememberHoverSource()
@@ -295,7 +304,7 @@ private fun MobileMenu(
                             Text("0${i + 1}.", style = mono(14.sp))
                             Text(
                                 s.label,
-                                style = mono(18.sp, if (hovered) Palette.Green else Palette.LightestSlate),
+                                style = mono(18.sp, if (hovered) PortfolioTheme.colors.accent else PortfolioTheme.colors.textPrimary),
                                 modifier = Modifier.padding(top = 4.dp),
                             )
                         }
@@ -314,12 +323,12 @@ private fun SocialRail(portfolio: Portfolio, modifier: Modifier) {
             LinkText(
                 link.label,
                 link.url,
-                mono(12.sp, Palette.LightSlate).copy(letterSpacing = 0.1.em),
+                mono(12.sp, PortfolioTheme.colors.textSecondary).copy(letterSpacing = 0.1.em),
                 Modifier.verticalText(),
             )
             Spacer(Modifier.height(24.dp))
         }
-        Box(Modifier.width(1.dp).height(90.dp).background(Palette.LightSlate))
+        Box(Modifier.width(1.dp).height(90.dp).background(PortfolioTheme.colors.textSecondary))
     }
 }
 
@@ -329,10 +338,10 @@ private fun EmailRail(email: String, modifier: Modifier) {
         LinkText(
             email,
             "mailto:$email",
-            mono(12.sp, Palette.LightSlate).copy(letterSpacing = 0.1.em),
+            mono(12.sp, PortfolioTheme.colors.textSecondary).copy(letterSpacing = 0.1.em),
             Modifier.verticalText(),
         )
         Spacer(Modifier.height(24.dp))
-        Box(Modifier.width(1.dp).height(90.dp).background(Palette.LightSlate))
+        Box(Modifier.width(1.dp).height(90.dp).background(PortfolioTheme.colors.textSecondary))
     }
 }

@@ -54,10 +54,10 @@ import com.rameshkhatri.portfolio.data.Experience
 import com.rameshkhatri.portfolio.data.Header
 import com.rameshkhatri.portfolio.data.Portfolio
 import com.rameshkhatri.portfolio.data.Project
-import com.rameshkhatri.portfolio.theme.Palette
-import com.rameshkhatri.portfolio.theme.body
-import com.rameshkhatri.portfolio.theme.heading
-import com.rameshkhatri.portfolio.theme.mono
+import com.rameshkhatri.portfolio.designsystem.PortfolioTheme
+import com.rameshkhatri.portfolio.designsystem.body
+import com.rameshkhatri.portfolio.designsystem.heading
+import com.rameshkhatri.portfolio.designsystem.mono
 
 // ---------------------------------------------------------------- Hero
 
@@ -80,7 +80,7 @@ fun HeroSection(header: Header, contentWidth: Dp, minHeight: Dp, topPadding: Dp,
         Reveal(2) {
             Text(
                 header.shortDesc,
-                style = heading(big, Palette.Slate).copy(fontWeight = FontWeight.Bold),
+                style = heading(big, PortfolioTheme.colors.textMuted).copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(top = 10.dp),
             )
         }
@@ -125,7 +125,7 @@ private fun AboutText(about: About, modifier: Modifier) {
         Column(Modifier.padding(top = 4.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             about.techStack.chunked(2).forEach { pair ->
                 Row {
-                    pair.forEach { BulletText(it, mono(13.sp, Palette.Slate), Modifier.weight(1f)) }
+                    pair.forEach { BulletText(it, mono(13.sp, PortfolioTheme.colors.textMuted), Modifier.weight(1f)) }
                     if (pair.size == 1) Spacer(Modifier.weight(1f))
                 }
             }
@@ -141,15 +141,15 @@ private fun Portrait(initials: String, modifier: Modifier) {
     val shape = RoundedCornerShape(4.dp)
     Box(modifier.widthIn(max = 300.dp).aspectRatio(1f).padding(end = 20.dp, bottom = 20.dp)) {
         Box(
-            Modifier.fillMaxSize().offset(frame, frame).border(2.dp, Palette.Green, shape),
+            Modifier.fillMaxSize().offset(frame, frame).border(2.dp, PortfolioTheme.colors.accent, shape),
         )
         Box(
             Modifier
                 .fillMaxSize()
                 .offset(if (hovered) (-4).dp else 0.dp, if (hovered) (-4).dp else 0.dp)
                 .clip(shape)
-                .background(Palette.LightNavy)
-                .background(if (hovered) Color.Transparent else Palette.Green.copy(alpha = 0.12f))
+                .background(PortfolioTheme.colors.surface)
+                .background(if (hovered) Color.Transparent else PortfolioTheme.colors.accent.copy(alpha = 0.12f))
                 .hoverable(source),
             contentAlignment = Alignment.Center,
         ) {
@@ -194,17 +194,17 @@ private fun VerticalTab(label: String, selected: Boolean, onClick: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .height(42.dp)
-            .background(if (hovered || selected) Palette.LightNavy else Color.Transparent)
+            .background(if (hovered || selected) PortfolioTheme.colors.surface else Color.Transparent)
             .linkClick(source, onClick),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             Modifier.width(2.dp).fillMaxHeight()
-                .background(if (selected) Palette.Green else Palette.LightestNavy),
+                .background(if (selected) PortfolioTheme.colors.accent else PortfolioTheme.colors.outline),
         )
         Text(
             label,
-            style = mono(13.sp, if (selected || hovered) Palette.Green else Palette.Slate),
+            style = mono(13.sp, if (selected || hovered) PortfolioTheme.colors.accent else PortfolioTheme.colors.textMuted),
             modifier = Modifier.padding(horizontal = 20.dp),
         )
     }
@@ -216,15 +216,15 @@ private fun HorizontalTab(label: String, selected: Boolean, onClick: () -> Unit)
     Column(
         Modifier
             .width(130.dp)
-            .background(if (hovered || selected) Palette.LightNavy else Color.Transparent)
+            .background(if (hovered || selected) PortfolioTheme.colors.surface else Color.Transparent)
             .linkClick(source, onClick),
     ) {
         Box(Modifier.fillMaxWidth().height(42.dp), contentAlignment = Alignment.Center) {
-            Text(label, style = mono(13.sp, if (selected) Palette.Green else Palette.Slate), maxLines = 1)
+            Text(label, style = mono(13.sp, if (selected) PortfolioTheme.colors.accent else PortfolioTheme.colors.textMuted), maxLines = 1)
         }
         Box(
             Modifier.fillMaxWidth().height(2.dp)
-                .background(if (selected) Palette.Green else Palette.LightestNavy),
+                .background(if (selected) PortfolioTheme.colors.accent else PortfolioTheme.colors.outline),
         )
     }
 }
@@ -242,15 +242,15 @@ private fun JobPanel(job: Experience, modifier: Modifier) {
             val url = j.url
             Text(
                 buildAnnotatedString {
-                    withStyle(SpanStyle(color = Palette.LightestSlate)) { append(j.title) }
-                    withStyle(SpanStyle(color = Palette.Green)) { append(" @ ${j.company}") }
+                    withStyle(SpanStyle(color = PortfolioTheme.colors.textPrimary)) { append(j.title) }
+                    withStyle(SpanStyle(color = PortfolioTheme.colors.accent)) { append(" @ ${j.company}") }
                 },
                 style = heading(22.sp).copy(fontWeight = FontWeight.Medium),
                 modifier = if (url != null) Modifier.linkClick(source) { uri.openUri(url) } else Modifier,
             )
             Text(
                 listOf(j.range, j.location).filter { it.isNotBlank() }.joinToString("  ·  "),
-                style = mono(13.sp, Palette.LightSlate),
+                style = mono(13.sp, PortfolioTheme.colors.textSecondary),
             )
             Spacer(Modifier.height(16.dp))
             j.bullets.forEach { BulletText(it, body(16.sp)) }
@@ -291,7 +291,7 @@ private fun FeaturedCard(p: Project, alignEnd: Boolean, desktop: Boolean) {
         val link = p.linkUrl?.takeIf { it.isNotBlank() }
         Text(
             p.name,
-            style = heading(28.sp, if (hovered && link != null) Palette.Green else Palette.LightestSlate),
+            style = heading(28.sp, if (hovered && link != null) PortfolioTheme.colors.accent else PortfolioTheme.colors.textPrimary),
             textAlign = textAlign,
             modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
                 .then(if (link != null) Modifier.linkClick(source) { uri.openUri(link) } else Modifier),
@@ -300,19 +300,19 @@ private fun FeaturedCard(p: Project, alignEnd: Boolean, desktop: Boolean) {
             Modifier
                 .then(if (desktop) Modifier.widthIn(max = 600.dp) else Modifier.fillMaxWidth())
                 .shadow(12.dp, RoundedCornerShape(4.dp))
-                .background(Palette.LightNavy, RoundedCornerShape(4.dp))
+                .background(PortfolioTheme.colors.surface, RoundedCornerShape(4.dp))
                 .padding(25.dp),
         ) {
-            Text(p.details, style = body(17.sp, Palette.LightSlate), textAlign = textAlign)
+            Text(p.details, style = body(17.sp, PortfolioTheme.colors.textSecondary), textAlign = textAlign)
         }
         Text(
             p.stack.joinToString("    "),
-            style = mono(13.sp, Palette.LightSlate),
+            style = mono(13.sp, PortfolioTheme.colors.textSecondary),
             textAlign = textAlign,
             modifier = Modifier.padding(top = 25.dp),
         )
         if (link != null) {
-            LinkText("View Project", link, mono(13.sp, Palette.LightestSlate), Modifier.padding(top = 10.dp))
+            LinkText("View Project", link, mono(13.sp, PortfolioTheme.colors.textPrimary), Modifier.padding(top = 10.dp))
         }
     }
 }
@@ -349,23 +349,23 @@ private fun ProjectCard(p: Project, modifier: Modifier) {
         modifier
             .graphicsLayer { translationY = lift.toPx() }
             .shadow(if (hovered) 16.dp else 6.dp, RoundedCornerShape(4.dp))
-            .background(Palette.LightNavy, RoundedCornerShape(4.dp))
+            .background(PortfolioTheme.colors.surface, RoundedCornerShape(4.dp))
             .linkClick(source) { link?.let { uri.openUri(it) } }
             .padding(horizontal = 28.dp, vertical = 30.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             FolderIcon()
             Spacer(Modifier.weight(1f))
-            if (link != null) LinkText("View", link, mono(12.sp, Palette.LightSlate))
+            if (link != null) LinkText("View", link, mono(12.sp, PortfolioTheme.colors.textSecondary))
         }
         Text(
             p.name,
-            style = heading(20.sp, if (hovered) Palette.Green else Palette.LightestSlate),
+            style = heading(20.sp, if (hovered) PortfolioTheme.colors.accent else PortfolioTheme.colors.textPrimary),
             modifier = Modifier.padding(top = 28.dp, bottom = 10.dp),
         )
-        Text(p.details, style = body(15.sp, Palette.LightSlate))
+        Text(p.details, style = body(15.sp, PortfolioTheme.colors.textSecondary))
         Spacer(Modifier.weight(1f).heightIn(min = 20.dp))
-        Text(p.stack.joinToString("   "), style = mono(12.sp, Palette.Slate))
+        Text(p.stack.joinToString("   "), style = mono(12.sp, PortfolioTheme.colors.textMuted))
     }
 }
 
@@ -402,16 +402,16 @@ fun Footer(portfolio: Portfolio, showSocials: Boolean) {
     ) {
         if (showSocials) {
             Row(horizontalArrangement = Arrangement.spacedBy(20.dp), modifier = Modifier.padding(bottom = 10.dp)) {
-                portfolio.socials.forEach { LinkText(it.label, it.url, mono(12.sp, Palette.LightSlate)) }
+                portfolio.socials.forEach { LinkText(it.label, it.url, mono(12.sp, PortfolioTheme.colors.textSecondary)) }
             }
         }
         val credit = "Designed & Built by ${portfolio.header.name}"
         val creditUrl = portfolio.socials.firstOrNull()?.url
         if (creditUrl != null) {
-            LinkText(credit, creditUrl, mono(12.sp, Palette.Slate))
+            LinkText(credit, creditUrl, mono(12.sp, PortfolioTheme.colors.textMuted))
         } else {
-            Text(credit, style = mono(12.sp, Palette.Slate))
+            Text(credit, style = mono(12.sp, PortfolioTheme.colors.textMuted))
         }
-        Text("Rebuilt with Compose Multiplatform", style = mono(11.sp, Palette.Slate.copy(alpha = 0.7f)))
+        Text("Rebuilt with Compose Multiplatform", style = mono(11.sp, PortfolioTheme.colors.textMuted.copy(alpha = 0.7f)))
     }
 }

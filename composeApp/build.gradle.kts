@@ -52,6 +52,7 @@ kotlin {
             implementation(compose.animation)
             implementation(compose.components.resources)
             implementation(libs.kotlinx.serialization.json)
+            implementation(projects.designsystem)
         }
         androidMain.dependencies {
             implementation(compose.preview)
