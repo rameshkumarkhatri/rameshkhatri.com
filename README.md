@@ -23,15 +23,39 @@ All content lives in `composeApp/src/commonMain/composeResources/files/portfolio
 startup and parsed into the models in `data/Portfolio.kt`. Optional fields (`resume_url`,
 `location`, `url`, `link_url`, …) can be left out or blank and the matching UI is hidden.
 
-Colors, typography and the theme live in the `designsystem` module
-(`designsystem/src/commonMain/kotlin/com/rameshkhatri/portfolio/designsystem/`):
+Colors, typography and the theme live in the `designsystem` module.
 
-- `Colors.kt` — `PortfolioColors` semantic slots with `DarkPortfolioColors` and `LightPortfolioColors`
+**Themes are data.** `designsystem/src/commonMain/composeResources/files/themes.json` defines
+the five built-in themes (Midnight, Ember, Forest, Rose, Graphite), each with a `dark` and a
+`light` variant and a `default` id. Every variant supplies the same seven slots as `#RRGGBB`
+(or `#AARRGGBB`) strings: `background`, `surface`, `outline`, `text_primary`, `text_secondary`,
+`text_muted`, `accent`; `scrim` is optional. Add an object to the `themes` array to add a theme;
+it appears in the "05. Theme" nav tab automatically. Keep body text (`text_muted`) at 4.5:1 or
+better against `background`.
+
+Code, in `designsystem/src/commonMain/kotlin/com/rameshkhatri/portfolio/designsystem/`:
+
+- `ThemeCatalog.kt` — JSON models (`ThemeSpec`, `ColorSpec`) and `loadThemeCatalog()`
+- `Colors.kt` — `PortfolioColors` semantic slots, plus the built-in Midnight palettes used until
+  the catalog loads
 - `Typography.kt` — `mono()`, `body()`, `heading()` text styles (bundled Fira Code)
-- `Theme.kt` — `PortfolioTheme(darkTheme = …)` root, defaults to the system setting; read values
-  in UI via `PortfolioTheme.colors`
+- `Theme.kt` — `PortfolioTheme(...)` root, `PortfolioTheme.colors` accessor, and `ThemeState`
+  (selected theme id + `ThemeMode` System/Light/Dark; plain Kotlin so Swift can drive it too)
 
-To force a mode, pass `PortfolioTheme(darkTheme = true)` (or `ThemeMode.Dark.isDark()`) in `App.kt`.
+The nav bar has a sun/moon toggle for light/dark and a "Theme" tab (dropdown on wide screens,
+swatch row in the phone menu). Selection is not persisted yet; it resets on relaunch.
+
+## UI layout
+
+`composeApp/src/commonMain/kotlin/com/rameshkhatri/portfolio/`:
+
+| Path | Contents |
+|---|---|
+| `App.kt` | `App()` root, `PortfolioPage` composition, `Section` enum |
+| `data/` | `portfolio.json` models and loader |
+| `ui/sections/` | One file per page section: Hero, About, Experience, Work, Contact, Footer |
+| `ui/components/` | One file per reusable component: NavBar, MobileMenu, SideRails, Logo, MenuIcon, ThemeToggle, ThemeSwatch, OutlineButton, LinkText, Bullet, SectionHeading, FolderIcon, Reveal |
+| `ui/utils/` | Modifier and animation helpers: `Hover.kt` (`rememberHoverSource`, `linkClick`), `Layout.kt` (`verticalText`), `Animation.kt` (`animateLift`) |
 
 ## Running
 

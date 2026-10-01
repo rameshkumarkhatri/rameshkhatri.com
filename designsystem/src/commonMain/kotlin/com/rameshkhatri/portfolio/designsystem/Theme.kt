@@ -23,16 +23,42 @@ fun ThemeMode.isDark(): Boolean = when (this) {
 }
 
 /**
- * App-wide theme selection. Plain Kotlin state (no Compose types in its API) so any platform
- * entry point, including Swift on iOS, can read or set it; Compose recomposes when [mode] changes.
+ * App-wide theme selection: which named theme from themes.json is active, and whether it is
+ * shown in dark or light mode. Plain Kotlin state (no Compose types in its API) so any platform
+ * entry point, including Swift on iOS, can read or set it; Compose recomposes on change.
  */
 object ThemeState {
     var mode: ThemeMode by mutableStateOf(ThemeMode.System)
+
+    /** Themes from themes.json. Empty until [load] completes. */
+    var themes: List<ThemeSpec> by mutableStateOf(emptyList())
+        private set
+
+    var selectedId: String? by mutableStateOf(null)
+
+    val selected: ThemeSpec?
+        get() = themes.firstOrNull { it.id == selectedId } ?: themes.firstOrNull()
+
+    /** Reads themes.json once and picks its default theme if nothing is selected yet. */
+    suspend fun load() {
+        if (themes.isNotEmpty()) return
+        val catalog = loadThemeCatalog()
+        themes = catalog.themes
+        if (selectedId == null) selectedId = catalog.default ?: catalog.themes.firstOrNull()?.id
+    }
+
+    fun select(id: String) {
+        selectedId = id
+    }
 
     /** Flips to the opposite of what is currently shown, given the resolved [currentlyDark]. */
     fun toggle(currentlyDark: Boolean) {
         mode = if (currentlyDark) ThemeMode.Light else ThemeMode.Dark
     }
+
+    /** Colors for the selected theme; the built-in Midnight palette until the catalog loads. */
+    fun colors(isDark: Boolean): PortfolioColors =
+        selected?.colors(isDark) ?: if (isDark) DarkPortfolioColors else LightPortfolioColors
 }
 
 /**
