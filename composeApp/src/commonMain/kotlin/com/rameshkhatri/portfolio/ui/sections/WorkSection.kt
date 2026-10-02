@@ -1,6 +1,11 @@
 package com.rameshkhatri.portfolio.ui.sections
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -17,9 +22,13 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
@@ -73,11 +82,23 @@ private fun FeaturedCard(p: Project, alignEnd: Boolean, desktop: Boolean) {
             modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
                 .then(if (link != null) Modifier.linkClick(source) { uri.openUri(link) } else Modifier),
         )
+        val cardShape = RoundedCornerShape(6.dp)
+        val cardBorder by animateColorAsState(
+            if (hovered) PortfolioTheme.colors.accent.copy(alpha = 0.55f) else PortfolioTheme.colors.outline,
+            tween(250),
+        )
         Box(
             Modifier
                 .then(if (desktop) Modifier.widthIn(max = 600.dp) else Modifier.fillMaxWidth())
-                .shadow(12.dp, RoundedCornerShape(4.dp))
-                .background(PortfolioTheme.colors.surface, RoundedCornerShape(4.dp))
+                .shadow(16.dp, cardShape, ambientColor = PortfolioTheme.colors.accent, spotColor = PortfolioTheme.colors.accent)
+                .background(
+                    Brush.linearGradient(
+                        listOf(PortfolioTheme.colors.surface, PortfolioTheme.colors.accent.copy(alpha = 0.06f).compositeOver(PortfolioTheme.colors.surface)),
+                    ),
+                    cardShape,
+                )
+                .border(1.dp, cardBorder, cardShape)
+                .hoverable(source)
                 .padding(25.dp),
         ) {
             Text(p.details, style = body(17.sp, PortfolioTheme.colors.textSecondary), textAlign = textAlign)
@@ -122,11 +143,16 @@ private fun ProjectCard(p: Project, modifier: Modifier) {
     val lift = animateLift(hovered, 7.dp)
     val uri = LocalUriHandler.current
     val link = p.linkUrl?.takeIf { it.isNotBlank() }
+    val shape = RoundedCornerShape(6.dp)
+    val accent = PortfolioTheme.colors.accent
+    val border by animateColorAsState(if (hovered) accent.copy(alpha = 0.55f) else PortfolioTheme.colors.outline, tween(250))
+    val elevation by animateDpAsState(if (hovered) 22.dp else 6.dp, tween(250))
     Column(
         modifier
             .graphicsLayer { translationY = lift.toPx() }
-            .shadow(if (hovered) 16.dp else 6.dp, RoundedCornerShape(4.dp))
-            .background(PortfolioTheme.colors.surface, RoundedCornerShape(4.dp))
+            .shadow(elevation, shape, ambientColor = if (hovered) accent else Color.Black, spotColor = if (hovered) accent else Color.Black)
+            .background(PortfolioTheme.colors.surface, shape)
+            .border(1.dp, border, shape)
             .linkClick(source) { link?.let { uri.openUri(it) } }
             .padding(horizontal = 28.dp, vertical = 30.dp),
     ) {

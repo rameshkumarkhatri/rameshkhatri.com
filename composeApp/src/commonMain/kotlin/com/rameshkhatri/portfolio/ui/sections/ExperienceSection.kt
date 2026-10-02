@@ -1,6 +1,9 @@
 package com.rameshkhatri.portfolio.ui.sections
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,6 +13,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,6 +50,9 @@ import com.rameshkhatri.portfolio.ui.components.SectionHeading
 import com.rameshkhatri.portfolio.ui.utils.linkClick
 import com.rameshkhatri.portfolio.ui.utils.rememberHoverSource
 
+private val TabHeight = 42.dp
+private val TabWidth = 130.dp
+
 @Composable
 fun ExperienceSection(jobs: List<Experience>, desktop: Boolean) {
     var selected by remember(jobs) { mutableIntStateOf(0) }
@@ -53,19 +60,36 @@ fun ExperienceSection(jobs: List<Experience>, desktop: Boolean) {
         SectionHeading(2, "Where I've Worked", compact = !desktop)
         if (desktop) {
             Row {
-                Column(Modifier.width(IntrinsicSize.Max)) {
-                    jobs.forEachIndexed { i, job ->
-                        VerticalTab(job.company, i == selected) { selected = i }
+                Box(Modifier.width(IntrinsicSize.Max)) {
+                    Column {
+                        jobs.forEachIndexed { i, job ->
+                            VerticalTab(job.company, i == selected) { selected = i }
+                        }
                     }
+                    // Track plus one indicator that slides between tabs.
+                    Box(Modifier.width(2.dp).height(TabHeight * jobs.size).background(PortfolioTheme.colors.outline))
+                    val indicatorY by animateDpAsState(TabHeight * selected, spring(stiffness = Spring.StiffnessMediumLow))
+                    Box(Modifier.offset(y = indicatorY).width(2.dp).height(TabHeight).background(PortfolioTheme.colors.accent))
                 }
                 Spacer(Modifier.width(24.dp))
                 JobPanel(jobs[selected], Modifier.weight(1f))
             }
         } else {
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
-                jobs.forEachIndexed { i, job ->
-                    HorizontalTab(job.company, i == selected) { selected = i }
+            Box(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
+                Row {
+                    jobs.forEachIndexed { i, job ->
+                        HorizontalTab(job.company, i == selected) { selected = i }
+                    }
                 }
+                Box(
+                    Modifier.align(Alignment.BottomStart).width(TabWidth * jobs.size).height(2.dp)
+                        .background(PortfolioTheme.colors.outline),
+                )
+                val indicatorX by animateDpAsState(TabWidth * selected, spring(stiffness = Spring.StiffnessMediumLow))
+                Box(
+                    Modifier.align(Alignment.BottomStart).offset(x = indicatorX).width(TabWidth).height(2.dp)
+                        .background(PortfolioTheme.colors.accent),
+                )
             }
             Spacer(Modifier.height(24.dp))
             JobPanel(jobs[selected], Modifier.fillMaxWidth())
@@ -79,15 +103,12 @@ private fun VerticalTab(label: String, selected: Boolean, onClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .height(42.dp)
+            .height(TabHeight)
             .background(if (hovered || selected) PortfolioTheme.colors.surface else Color.Transparent)
             .linkClick(source, onClick),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            Modifier.width(2.dp).fillMaxHeight()
-                .background(if (selected) PortfolioTheme.colors.accent else PortfolioTheme.colors.outline),
-        )
+        Spacer(Modifier.width(2.dp))
         Text(
             label,
             style = mono(13.sp, if (selected || hovered) PortfolioTheme.colors.accent else PortfolioTheme.colors.textMuted),
@@ -101,17 +122,14 @@ private fun HorizontalTab(label: String, selected: Boolean, onClick: () -> Unit)
     val (source, hovered) = rememberHoverSource()
     Column(
         Modifier
-            .width(130.dp)
+            .width(TabWidth)
             .background(if (hovered || selected) PortfolioTheme.colors.surface else Color.Transparent)
             .linkClick(source, onClick),
     ) {
-        Box(Modifier.fillMaxWidth().height(42.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.fillMaxWidth().height(TabHeight), contentAlignment = Alignment.Center) {
             Text(label, style = mono(13.sp, if (selected) PortfolioTheme.colors.accent else PortfolioTheme.colors.textMuted), maxLines = 1)
         }
-        Box(
-            Modifier.fillMaxWidth().height(2.dp)
-                .background(if (selected) PortfolioTheme.colors.accent else PortfolioTheme.colors.outline),
-        )
+        Spacer(Modifier.height(2.dp))
     }
 }
 

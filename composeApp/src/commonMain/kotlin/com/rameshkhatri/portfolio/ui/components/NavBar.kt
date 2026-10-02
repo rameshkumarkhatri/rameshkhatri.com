@@ -21,7 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,12 +54,18 @@ fun NavBar(
     onToggleTheme: () -> Unit,
 ) {
     val height by animateDpAsState(if (scrolled) NavHeightScrolled else NavHeight)
+    val hairline = PortfolioTheme.colors.outline
     Row(
         Modifier
             .fillMaxWidth()
             .height(height)
-            .then(if (scrolled) Modifier.shadow(10.dp) else Modifier)
-            .background(PortfolioTheme.colors.background.copy(alpha = 0.95f))
+            .then(if (scrolled) Modifier.shadow(12.dp) else Modifier)
+            .background(PortfolioTheme.colors.background.copy(alpha = if (scrolled) 0.88f else 0f))
+            .drawBehind {
+                if (scrolled) {
+                    drawLine(hairline, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx())
+                }
+            }
             .padding(horizontal = if (desktop) 50.dp else 25.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

@@ -1,5 +1,7 @@
 package com.rameshkhatri.portfolio.designsystem
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -71,6 +73,7 @@ fun PortfolioTheme(
     colors: PortfolioColors = if (darkTheme) DarkPortfolioColors else LightPortfolioColors,
     content: @Composable () -> Unit,
 ) {
+    val colors = colors.animated()
     val scheme = if (colors.isDark) {
         darkColorScheme(
             primary = colors.accent,
@@ -98,6 +101,23 @@ fun PortfolioTheme(
             content = content,
         )
     }
+}
+
+/** Cross-fades every slot when the theme or mode changes instead of snapping. */
+@Composable
+private fun PortfolioColors.animated(): PortfolioColors {
+    val spec = tween<androidx.compose.ui.graphics.Color>(durationMillis = 450)
+    return PortfolioColors(
+        background = animateColorAsState(background, spec).value,
+        surface = animateColorAsState(surface, spec).value,
+        outline = animateColorAsState(outline, spec).value,
+        textPrimary = animateColorAsState(textPrimary, spec).value,
+        textSecondary = animateColorAsState(textSecondary, spec).value,
+        textMuted = animateColorAsState(textMuted, spec).value,
+        accent = animateColorAsState(accent, spec).value,
+        scrim = animateColorAsState(scrim, spec).value,
+        isDark = isDark,
+    )
 }
 
 /** Accessors for the current theme values, mirroring [MaterialTheme]. */

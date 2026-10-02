@@ -25,6 +25,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
@@ -35,11 +39,13 @@ import com.rameshkhatri.portfolio.data.loadPortfolio
 import com.rameshkhatri.portfolio.designsystem.PortfolioTheme
 import com.rameshkhatri.portfolio.designsystem.ThemeState
 import com.rameshkhatri.portfolio.designsystem.isDark
+import com.rameshkhatri.portfolio.ui.components.AmbientBackground
 import com.rameshkhatri.portfolio.ui.components.EmailRail
 import com.rameshkhatri.portfolio.ui.components.MobileMenu
 import com.rameshkhatri.portfolio.ui.components.NavBar
 import com.rameshkhatri.portfolio.ui.components.NavHeight
 import com.rameshkhatri.portfolio.ui.components.NavHeightScrolled
+import com.rameshkhatri.portfolio.ui.components.RevealOnScroll
 import com.rameshkhatri.portfolio.ui.components.SocialRail
 import com.rameshkhatri.portfolio.ui.sections.AboutSection
 import com.rameshkhatri.portfolio.ui.sections.ContactSection
@@ -74,12 +80,25 @@ fun App() {
 
 @Composable
 private fun PortfolioPage(portfolio: Portfolio, isDark: Boolean, onToggleTheme: () -> Unit) {
+    var pointer by remember { mutableStateOf<Offset?>(null) }
     BoxWithConstraints(
         Modifier
             .fillMaxSize()
             .background(PortfolioTheme.colors.background)
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        when (event.type) {
+                            PointerEventType.Move, PointerEventType.Enter -> pointer = event.changes.first().position
+                            PointerEventType.Exit -> pointer = null
+                        }
+                    }
+                }
+            }
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {
+        AmbientBackground(pointer, Modifier.fillMaxSize())
         val width = maxWidth
         val height = maxHeight
         val desktop = width > 768.dp
@@ -125,21 +144,26 @@ private fun PortfolioPage(portfolio: Portfolio, isDark: Boolean, onToggleTheme: 
                 contentWidth = width - hPad * 2,
                 minHeight = height,
                 topPadding = NavHeight,
+                desktop = desktop,
+                scroll = { scroll.value },
+                pointer = { pointer },
                 onGetInTouch = {
                     if (portfolio.getInTouchUrl.isNotBlank()) uri.openUri(portfolio.getInTouchUrl)
                     else navigate(Section.Contact)
                 },
             )
-            Box(Modifier.anchor(Section.About)) { AboutSection(portfolio.about, portfolio.header.initial, desktop) }
+            RevealOnScroll(Modifier.anchor(Section.About)) {
+                AboutSection(portfolio.about, portfolio.header.initial, desktop)
+            }
             if (portfolio.experience.isNotEmpty()) {
-                Box(Modifier.anchor(Section.Experience)) { ExperienceSection(portfolio.experience, desktop) }
+                RevealOnScroll(Modifier.anchor(Section.Experience)) { ExperienceSection(portfolio.experience, desktop) }
             }
             if (portfolio.featuredProjects.isNotEmpty() || portfolio.caseStudies.isNotEmpty()) {
-                Box(Modifier.anchor(Section.Work)) {
+                RevealOnScroll(Modifier.anchor(Section.Work)) {
                     WorkSection(portfolio.featuredProjects, portfolio.caseStudies, desktop)
                 }
             }
-            Box(Modifier.anchor(Section.Contact)) { ContactSection(portfolio, desktop) }
+            RevealOnScroll(Modifier.anchor(Section.Contact)) { ContactSection(portfolio, desktop) }
             Footer(portfolio, showSocials = !desktop)
         }
 
