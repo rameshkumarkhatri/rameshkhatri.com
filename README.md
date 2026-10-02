@@ -3,6 +3,11 @@
 A port of the Gatsby site at rameshkhatri.com to Compose Multiplatform. One shared UI in
 `commonMain` runs on **Android, iOS, Desktop (macOS / Windows / Linux) and the Web (Wasm)**.
 
+## Screenshots and Videos
+<img width="419" height="913" alt="image" src="https://github.com/user-attachments/assets/65ed5d46-65a1-4c97-bf54-5b6ced0a8a03" />
+
+<img width="1465" height="993" alt="image" src="https://github.com/user-attachments/assets/bf083ba4-4142-446f-bb99-5a9ad8c38dd4" />
+
 ## What's in it
 
 The same single-page layout as the original site, in the same navy / mint palette:
