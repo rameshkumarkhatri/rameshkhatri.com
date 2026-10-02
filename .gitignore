@@ -29,6 +29,15 @@ replay_pid*
 .kotlin/
 **/build/
 !src/**/build/
+# Keep the production web build so it can be committed / served (e.g. GitHub Pages).
+# A path can't be un-ignored while a parent dir is ignored, so open each level explicitly.
+!composeApp/build/
+composeApp/build/*
+!composeApp/build/dist/
+composeApp/build/dist/*
+!composeApp/build/dist/wasmJs/
+composeApp/build/dist/wasmJs/*
+!composeApp/build/dist/wasmJs/productionExecutable/
 captures/
 .externalNativeBuild/
 .cxx/

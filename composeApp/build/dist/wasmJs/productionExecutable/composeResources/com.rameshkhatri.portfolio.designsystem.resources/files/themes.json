@@ -1,0 +1,115 @@
+{
+  "default": "midnight",
+  "themes": [
+    {
+      "id": "midnight",
+      "name": "Midnight",
+      "dark": {
+        "background": "#0A192F",
+        "surface": "#112240",
+        "outline": "#233554",
+        "text_primary": "#CCD6F6",
+        "text_secondary": "#A8B2D1",
+        "text_muted": "#8892B0",
+        "accent": "#64FFDA"
+      },
+      "light": {
+        "background": "#F7F9FC",
+        "surface": "#FFFFFF",
+        "outline": "#D9E0EC",
+        "text_primary": "#0A192F",
+        "text_secondary": "#3D4B6B",
+        "text_muted": "#5A6785",
+        "accent": "#0B7A68"
+      }
+    },
+    {
+      "id": "ember",
+      "name": "Ember",
+      "dark": {
+        "background": "#1A1210",
+        "surface": "#261A17",
+        "outline": "#3D2B26",
+        "text_primary": "#F5E6E0",
+        "text_secondary": "#D9C2B8",
+        "text_muted": "#A89088",
+        "accent": "#FF8A5B"
+      },
+      "light": {
+        "background": "#FDF8F5",
+        "surface": "#FFFFFF",
+        "outline": "#EBDAD2",
+        "text_primary": "#2B1A14",
+        "text_secondary": "#5A403A",
+        "text_muted": "#7A5E56",
+        "accent": "#C2410C"
+      }
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "dark": {
+        "background": "#0B1A14",
+        "surface": "#122820",
+        "outline": "#1F3D31",
+        "text_primary": "#E3F2EA",
+        "text_secondary": "#B8D4C4",
+        "text_muted": "#8AA899",
+        "accent": "#A3E635"
+      },
+      "light": {
+        "background": "#F4FAF6",
+        "surface": "#FFFFFF",
+        "outline": "#D3E5DA",
+        "text_primary": "#0F2A1E",
+        "text_secondary": "#35594A",
+        "text_muted": "#557565",
+        "accent": "#15803D"
+      }
+    },
+    {
+      "id": "rose",
+      "name": "Rose",
+      "dark": {
+        "background": "#1C1020",
+        "surface": "#2A1830",
+        "outline": "#43284C",
+        "text_primary": "#F6E8F5",
+        "text_secondary": "#DCC4DA",
+        "text_muted": "#AE92AC",
+        "accent": "#F472B6"
+      },
+      "light": {
+        "background": "#FCF6FA",
+        "surface": "#FFFFFF",
+        "outline": "#EAD6E6",
+        "text_primary": "#2D1230",
+        "text_secondary": "#5C3A5F",
+        "text_muted": "#7D5C7F",
+        "accent": "#BE185D"
+      }
+    },
+    {
+      "id": "graphite",
+      "name": "Graphite",
+      "dark": {
+        "background": "#121212",
+        "surface": "#1E1E1E",
+        "outline": "#333333",
+        "text_primary": "#F2F2F2",
+        "text_secondary": "#C8C8C8",
+        "text_muted": "#9A9A9A",
+        "accent": "#FBBF24"
+      },
+      "light": {
+        "background": "#FAFAFA",
+        "surface": "#FFFFFF",
+        "outline": "#E2E2E2",
+        "text_primary": "#171717",
+        "text_secondary": "#404040",
+        "text_muted": "#666666",
+        "accent": "#B45309"
+      }
+    }
+  ]
+}
